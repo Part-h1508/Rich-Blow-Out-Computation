@@ -27,11 +27,11 @@ import os
 
 # plot settings (same style as before)
 plt.rcParams.update({
-    "font.size": 16,
-    "axes.labelsize": 18,
-    "xtick.labelsize": 14,
-    "ytick.labelsize": 14,
-    "legend.fontsize": 14
+    "font.size": 26,
+    "axes.labelsize": 26,
+    "xtick.labelsize": 26,
+    "ytick.labelsize": 26,
+    "legend.fontsize": 26
 })
 
 # variables
@@ -69,7 +69,7 @@ for file in plot_files:
     phi_norm = fuel_val / phi_rbo
 
     # plot
-    plt.semilogy(frequencies, psd, label=f"Φ/Φ_RBO = {phi_norm:.3f}")
+    plt.semilogy(frequencies, psd, label=f"$\\Phi/\\Phi_{{RBO}}$ = {phi_norm:.3f}")
 
     # find peak (ignore DC)
     peak_index = np.argmax(psd[1:]) + 1

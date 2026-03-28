@@ -20,6 +20,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 
+# plot settings for larger fonts
+plt.rcParams.update({
+    "font.size": 26,
+    "axes.labelsize": 26,
+    "xtick.labelsize": 26,
+    "ytick.labelsize": 26,
+    "axes.titlesize": 26
+})
+
 # variables
 phi_rbo = 6.3   # given
 
@@ -49,7 +58,7 @@ for i, file in enumerate(plot_files):
     axes[i].plot(time, signal, color="#ff0000", linewidth=0.6)
     
     # title with normalized value
-    axes[i].set_title(f"Φ / Φ_RBO = {phi_norm:.3f}")
+    axes[i].set_title(f"$\\Phi/\\Phi_{{RBO}}$ = {phi_norm:.3f}")
     axes[i].set_ylabel("Amplitude")
     axes[i].grid(True, alpha=0.3)
 

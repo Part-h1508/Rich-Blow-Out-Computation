@@ -23,6 +23,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 
+# plot settings for larger fonts
+plt.rcParams.update({
+    "font.size": 26,
+    "axes.labelsize": 26,
+    "xtick.labelsize": 26,
+    "ytick.labelsize": 26,
+    "axes.titlesize": 26
+})
+
 # variables
 phi_rbo = 6.3
 
@@ -75,9 +84,9 @@ plt.axhline(y=0.3, linestyle='--', color='black')
 plt.axvline(x=0.9576, linestyle='--', color='red')
 
 # labels
-plt.xlabel("Normalized Fuel Ratio (Φ/Φ_RBO)")
+plt.xlabel("Normalized Fuel Ratio ($\\Phi/\\Phi_{{RBO}}$)") 
 plt.ylabel("NRMS")
-plt.title("NRMS Variation Approaching RBO")
+
 
 plt.grid(True, alpha=0.3)
 

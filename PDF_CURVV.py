@@ -26,6 +26,15 @@ import matplotlib.pyplot as plt
 from scipy.stats import norm
 import os
 
+# plot settings for larger fonts
+plt.rcParams.update({
+    "font.size": 26,
+    "axes.labelsize": 26,
+    "xtick.labelsize": 26,
+    "ytick.labelsize": 26,
+    "axes.titlesize": 26
+})
+
 # variables
 phi_rbo = 6.3
 
@@ -60,7 +69,7 @@ for i, file in enumerate(plot_files):
     fuel_val = float(file.replace(".txt", ""))
     phi_norm = fuel_val / phi_rbo
 
-    plt.title(f"Φ/Φ_RBO = {phi_norm:.3f}")
+    plt.title(f"$\\Phi/\\Phi_{{RBO}}$ = {phi_norm:.3f}")
     plt.xlabel("Normalized amplitude")
     plt.ylim(0, 0.6)
 
