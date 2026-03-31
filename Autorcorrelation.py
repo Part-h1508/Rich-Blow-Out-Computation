@@ -1,23 +1,12 @@
 """
-this file is to simulate the autocorrelation for RBO
+this file is to simulate autocorrelation for RBO (final corrected)
 the graph describes temporal behaviour of the signal
 
-The fig includes:
-
-Autocorrelation decay for three fuel conditions:
-1. Low fuel (stable)
-2. Mid fuel
-3. Near RBO
-
-We find:
---> correlation reduces as lag increases
---> behaviour changes as we approach RBO
-"""
-
-"""
-same method as LBO.
-we compute normalized autocorrelation and plot decay
-over a short lag window.
+updated based on prof feedback:
+--> using short segment (2 sec)
+--> correct normalization (r(0) = 1)
+--> smoothing without affecting first point
+--> reduced lag window for better visualization
 """
 
 # imports
@@ -25,26 +14,18 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 
-# plot settings for larger fonts
-plt.rcParams.update({
-    "font.size": 26,
-    "axes.labelsize": 26,
-    "xtick.labelsize": 26,
-    "ytick.labelsize": 26,
-    "axes.titlesize": 26
-})
-
 # variables
+folder_path = "."
 phi_rbo = 6.3
 
-# choose same 3 cases
+# files to compare
 plot_files = ["5.0.txt", "5.8.txt", "6.3.txt"]
 
 plt.figure(figsize=(10, 6))
 
 for file in plot_files:
     
-    file_path = file
+    file_path = os.path.join(folder_path, file)
     
     # load data
     data = np.loadtxt(file_path)
@@ -58,37 +39,48 @@ for file in plot_files:
     dt = time[1] - time[0]
     fs = 1 / dt
 
+    # use only first 2 seconds
+    signal = signal[:int(2 * fs)]
+
     # autocorrelation
     corr = np.correlate(signal, signal, mode='full')
     center = corr.size // 2
 
-    # take only positive lags
-    corr = corr[center:]
-    corr = corr / corr[0]
+    # shorter lag window (20 ms)
+    max_lag = int(0.02 * fs)
 
-    # time axis (ms)
-    lag = (np.arange(len(corr)) / fs) * 1000
+    rxx = corr[center:center + max_lag] / corr[center]
 
-    # take only first 100 ms (same as LBO)
-    max_lag = int(0.1 * fs)
+    # smooth ONLY after first few points
+    smooth = np.copy(rxx)
 
-    corr = corr[:max_lag]
-    lag = lag[:max_lag]
+    # apply smoothing starting from index 2
+    smooth[2:] = np.convolve(rxx[2:], np.ones(5)/5, mode='same')
 
-    # normalized fuel ratio
+    # enforce correct normalization
+    smooth[0] = 1
+    smooth[1] = rxx[1]
+
+    rxx = smooth
+
+    # lag axis
+    lag = (np.arange(max_lag) / fs) * 1000
+
+    # normalized ratio
     fuel_val = float(file.replace(".txt", ""))
     phi_norm = fuel_val / phi_rbo
 
     # plot
-    plt.plot(lag, corr, label=f"$\\Phi/\\Phi_{{RBO}}$ = {phi_norm:.3f}")
+    plt.plot(lag, rxx, label=f"Φ/Φ_RBO = {phi_norm:.3f}")
 
 # formatting
 plt.xlabel("Lag Time (ms)")
 plt.ylabel("Autocorrelation Coefficient")
+
 plt.axhline(0, color='black', linewidth=1, alpha=0.5)
 plt.grid(True, alpha=0.3)
 plt.legend()
 
 plt.tight_layout()
-plt.savefig("Figure_5_RBO_Autocorrelation.png", dpi=300)
+plt.savefig("Figure_RBO_Autocorr_FINAL.png", dpi=300)
 plt.show()
