@@ -1,11 +1,11 @@
 """
-Autocorrelation plot for RBO (corrected & defensible)
+this file is to simulate autocorrelation for RBO
+the graph describes temporal behaviour of the signal
 
-Fixes applied:
-- Proper normalization so r(0) = 1
-- Removed smoothing (avoids distortion of ACF)
-- Uses short segment (2 sec) for local behaviour
-- Clean and physically correct implementation
+updated:
+--> using Excel CORREL style (pearson correlation)
+--> using short segment (2 sec)
+--> removed unstable high lag region
 """
 
 import numpy as np
@@ -22,54 +22,56 @@ plot_files = ["5.0.txt", "5.8.txt", "6.3.txt"]
 plt.figure(figsize=(10, 6))
 
 for file in plot_files:
-
+    
     file_path = os.path.join(folder_path, file)
-
-    # load data
+    
     data = np.loadtxt(file_path)
     time = data[:, 0]
     signal = data[:, 1]
 
     # sampling frequency
-    dt = time[1] - time[0]
-    fs = 1 / dt
-
-    # remove mean
-    signal = signal - np.mean(signal)
+    fs = 1 / (time[1] - time[0])
 
     # use only first 2 seconds
-    N = int(2 * fs)
-    signal = signal[:N]
+    signal = signal[:int(2 * fs)]
 
     # autocorrelation
-    corr = np.correlate(signal, signal, mode='full')
-    center = len(corr) // 2
+    acf = []
 
-    # normalize → ensures r(0) = 1
-    corr = corr / corr[center]
+    max_lag = 15
+    min_points = 50
 
-    # shorter lag window (20 ms)
-    max_lag = int(0.02 * fs)
-    rxx = corr[center:center + max_lag]
+    for k in range(max_lag + 1):
 
-    # lag axis
-    lag = (np.arange(max_lag) / fs) * 1000
+        if k == 0:
+            x1 = signal
+            x2 = signal
+        else:
+            x1 = signal[:-k]
+            x2 = signal[k:]
 
-    # normalized equivalence ratio
+        if len(x1) < min_points:
+            break
+
+        r = np.corrcoef(x1, x2)[0, 1]
+        acf.append(r)
+
+    acf = np.array(acf)
+    acf = np.nan_to_num(acf)
+
+    lag = np.arange(len(acf))
+
     fuel_val = float(file.replace(".txt", ""))
     phi_norm = fuel_val / phi_rbo
 
-    # plot
-    plt.plot(lag, rxx, label=f"$\\Phi/\\Phi_{{RBO}}$ = {phi_norm:.3f}")
+    plt.plot(lag, acf, label=f"$\\Phi/\\Phi_{{RBO}}$ = {phi_norm:.3f}")
 
-# formatting
-plt.xlabel("Lag Time (ms)")
-plt.ylabel("Autocorrelation Coefficient")
+plt.xlabel("Lag")
+plt.ylabel("Autocorrelation Function")
 
-plt.axhline(0, color='black', linewidth=1, alpha=0.5)
 plt.grid(True, alpha=0.3)
 plt.legend()
 
 plt.tight_layout()
-plt.savefig("Figure_RBO_Autocorr_FINA1L.png", dpi=300)
+plt.savefig("Figure_RBO_Autocorrelation.png", dpi=300)
 plt.show()
