@@ -86,5 +86,5 @@ plt.grid(True, alpha=0.3)
 plt.legend()
 
 plt.tight_layout()
-plt.savefig("Figure_6_RBO_CumulativeEnergy_Y_Axis_Changed   .png", dpi=300)
+plt.savefig("Figure_6_RBO_CumulativeEnergy_Y_Axis_Changed1.png", dpi=300)
 plt.show()
