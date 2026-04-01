@@ -66,12 +66,14 @@ for file in plot_files:
 
     plt.plot(lag, acf, label=f"$\\Phi/\\Phi_{{RBO}}$ = {phi_norm:.3f}")
 
-plt.xlabel("Lag")
-plt.ylabel("Autocorrelation Function")
+plt.xlabel("Lag", fontsize=22)
+plt.ylabel("Autocorrelation Function", fontsize=22)
+plt.xticks(fontsize=22)
+plt.yticks(fontsize=22)
 
 plt.grid(True, alpha=0.3)
-plt.legend()
+plt.legend(fontsize=18)
 
 plt.tight_layout()
-plt.savefig("Figure_RBO_Autocorrelation.png", dpi=300)
+plt.savefig("Figure_RBO_Autocorrelation_ex.png", dpi=300)
 plt.show()
