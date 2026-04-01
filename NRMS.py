@@ -84,7 +84,7 @@ plt.axhline(y=0.3, linestyle='--', color='black')
 plt.axvline(x=0.9576, linestyle='--', color='red')
 
 # labels
-plt.xlabel("Normalized Fuel Ratio ($\\Phi/\\Phi_{{RBO}}$)") 
+plt.xlabel("($\\Phi/\\Phi_{{RBO}}$)") 
 plt.ylabel("NRMS")
 
 
