@@ -92,7 +92,7 @@ plt.xlabel("Frequency (Hz)")
 plt.ylabel("PSD")
 plt.xlim(0, 100)   # same zoom as LBO
 plt.grid(True, alpha=0.3)
-plt.legend(title="Φ/Φ_RBO")
+plt.legend(title="$\\Phi/\\Phi_{{RBO}}$")
 
 plt.tight_layout()
 plt.savefig("Figure_2_RBO_FrequencySpectrum.png", dpi=300)
